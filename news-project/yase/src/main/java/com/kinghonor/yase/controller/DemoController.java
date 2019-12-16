@@ -21,6 +21,6 @@ public class DemoController {
     @ResponseBody
     public String test(String telephone){
         System.out.println("....test...");
-        return "success";
+        return "success。。。";
     }
 }
