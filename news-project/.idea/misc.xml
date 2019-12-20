@@ -9,6 +9,7 @@
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/yase/pom.xml" />
+        <option value="$PROJECT_DIR$/daji/pom.xml" />
       </list>
     </option>
   </component>

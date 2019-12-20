@@ -1,27 +1,23 @@
-package com.kinghonor.yase.controller;
+package com.kinghonor.daji.controller;
 
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.request.AlipayTradePagePayRequest;
-import com.kinghonor.yase.config.AlipayConfig;
+import com.kinghonor.daji.config.AlipayConfig;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 
-@Slf4j
 @Api(description = "用户操作接口")
 @RequestMapping("/admin")
 @Controller
@@ -29,7 +25,7 @@ public class DemoController {
 
     @ApiOperation(value = "获取otp", notes="通过手机号获取OTP验证码")
     @ApiImplicitParam(name = "telephone", value = "电话号码", paramType = "query", required = true, dataType = "Integer")
-    @RequestMapping(value = "test", method= RequestMethod.GET)
+    @RequestMapping("test")
     @ResponseBody
     public String test(String telephone){
         System.out.println("....test...");
@@ -38,7 +34,7 @@ public class DemoController {
 
     @RequestMapping(value = "/index", method= RequestMethod.GET)
     public String index(){
-        System.out.println("....index...");
+        System.out.println("....index..sss.");
         return "index";
     }
 
@@ -49,13 +45,13 @@ public class DemoController {
         try {
             AlipayClient alipayClient = new DefaultAlipayClient(AlipayConfig.gatewayUrl, AlipayConfig.app_id, AlipayConfig.merchant_private_key, "json", AlipayConfig.charset, AlipayConfig.alipay_public_key, AlipayConfig.sign_type);
             //商户订单号，商户网站订单系统中唯一订单号，必填
-            String out_trade_no = request.getParameter("WIDout_trade_no");
+            String out_trade_no = new String(request.getParameter("WIDout_trade_no").getBytes("ISO-8859-1"),"UTF-8");
             //付款金额，必填
-            String total_amount =request.getParameter("WIDtotal_amount");
+            String total_amount = new String(request.getParameter("WIDtotal_amount").getBytes("ISO-8859-1"),"UTF-8");
             //订单名称，必填
-            String subject = request.getParameter("WIDsubject");
+            String subject = new String(request.getParameter("WIDsubject").getBytes("ISO-8859-1"),"UTF-8");
             //商品描述，可空
-            String body = request.getParameter("WIDbody");
+            String body = new String(request.getParameter("WIDbody").getBytes("ISO-8859-1"),"UTF-8");
 
             //设置请求参数
             AlipayTradePagePayRequest alipayRequest = new AlipayTradePagePayRequest();
@@ -70,8 +66,7 @@ public class DemoController {
 
             String result = alipayClient.pageExecute(alipayRequest).getBody();
             mv.addObject("result",result);
-        } catch (AlipayApiException e) {
-            log.info("AlipayApiException exception...");
+        } catch (UnsupportedEncodingException | AlipayApiException e) {
             e.printStackTrace();
         }
         mv.setViewName("alipay.trade.page.pay");
